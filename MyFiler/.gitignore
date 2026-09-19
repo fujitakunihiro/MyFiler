@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+*$py.class
+myfiler_config.json
+.pytest_cache/
