@@ -1,8 +1,0 @@
-@startuml
-actor User
-participant HDMIDevice
-
-User -> HDMIDevice : sendNativeFlag()
-HDMIDevice -> HDMIDevice : checkStatus()
-HDMIDevice --> User : 処理完了
-@enduml

@@ -1,0 +1,11 @@
+# Ignore all root items except MyFiler
+/*
+!/MyFiler
+!/.gitignore
+
+# Python caches & temp files
+__pycache__/
+*.py[cod]
+*$py.class
+myfiler_config.json
+.pytest_cache/
