@@ -30,6 +30,7 @@ class Workspace:
     name: str
     tabs: List[ExplorerTab] = field(default_factory=list)
     active_tab_id: Optional[str] = None
+    shortcut_key: Optional[int] = None
 
     @classmethod
     def create(cls, name: str, tabs: Optional[List[ExplorerTab]] = None) -> "Workspace":
@@ -100,6 +101,7 @@ class ConfigManager:
                         name=ws_data.get("name", "Default Workspace"),
                         tabs=tabs,
                         active_tab_id=ws_data.get("active_tab_id")
+                        ,shortcut_key=ws_data.get("shortcut_key")
                     )
                 )
 
@@ -133,6 +135,7 @@ class ConfigManager:
                         "id": ws.id,
                         "name": ws.name,
                         "active_tab_id": ws.active_tab_id,
+                        "shortcut_key": ws.shortcut_key,
                         "tabs": [asdict(t) for t in ws.tabs]
                     }
                     for ws in config.workspaces

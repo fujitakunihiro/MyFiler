@@ -56,6 +56,9 @@ class WorkspaceView(ttk.Frame):
         btn_del_ws = ttk.Button(ws_btn_frame, text="🗑 削除", width=6, command=self._delete_workspace)
         btn_del_ws.pack(side=tk.LEFT)
 
+        btn_shortcut = ttk.Button(ws_btn_frame, text="⌨ 割当", width=6, command=self._assign_shortcut)
+        btn_shortcut.pack(side=tk.RIGHT)
+
         # Keep tab actions outside the expanding list so they remain visible
         # even when the window height is reduced.
         tab_btn_frame = ttk.Frame(self, style="Sidebar.TFrame")
@@ -148,6 +151,52 @@ class WorkspaceView(ttk.Frame):
                 if self.on_config_modified:
                     self.on_config_modified()
                 break
+
+    def select_workspace_by_shortcut(self, number: int):
+        """Activate the workspace assigned to Ctrl+number."""
+        workspace = next((ws for ws in self.config.workspaces if ws.shortcut_key == number), None)
+        if workspace is None:
+            return
+        self.config.active_workspace_id = workspace.id
+        self.ws_combo_var.set(workspace.name)
+        self.refresh_tabs()
+        if self.on_workspace_changed:
+            self.on_workspace_changed(workspace)
+        active_tab = self.config.get_active_tab(workspace)
+        if active_tab:
+            self.on_tab_selected(active_tab)
+        if self.on_config_modified:
+            self.on_config_modified()
+
+    def _assign_shortcut(self):
+        active_ws = self.config.get_active_workspace()
+        if not active_ws:
+            return
+        current = str(active_ws.shortcut_key) if active_ws.shortcut_key else ""
+        value = simpledialog.askstring(
+            "ショートカット割り当て",
+            "Ctrl + 数字キー（1〜9）を割り当てます。\n空欄で割り当て解除:",
+            initialvalue=current,
+            parent=self,
+        )
+        if value is None:
+            return
+        value = value.strip()
+        if not value:
+            active_ws.shortcut_key = None
+        elif value.isdigit() and 1 <= int(value) <= 9:
+            key = int(value)
+            other = next((ws for ws in self.config.workspaces if ws is not active_ws and ws.shortcut_key == key), None)
+            if other:
+                messagebox.showwarning("割り当てできません", f"Ctrl + {key} は「{other.name}」に割り当て済みです。", parent=self)
+                return
+            active_ws.shortcut_key = key
+        else:
+            messagebox.showwarning("入力エラー", "1〜9の数字、または空欄を入力してください。", parent=self)
+            return
+        self.refresh_workspaces()
+        if self.on_config_modified:
+            self.on_config_modified()
 
     def _on_tab_selected_event(self, event):
         selection = self.tab_tree.selection()

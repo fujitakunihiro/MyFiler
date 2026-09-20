@@ -23,7 +23,16 @@ class MainWindow(tk.Tk):
         self._setup_window()
         self._build_menu()
         self._build_ui()
+        self._bind_workspace_shortcuts()
         self._restore_initial_view()
+
+    def _bind_workspace_shortcuts(self):
+        for number in range(1, 10):
+            self.bind_all(f"<Control-Key-{number}>", lambda event, n=number: self._switch_workspace_shortcut(n))
+
+    def _switch_workspace_shortcut(self, number: int):
+        self.workspace_view.select_workspace_by_shortcut(number)
+        return "break"
 
     def _setup_window(self):
         self.title("MyFiler - 仕事用ファイラー")
