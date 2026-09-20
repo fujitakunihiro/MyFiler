@@ -55,11 +55,10 @@ class FileListView(ttk.Frame):
         nav_frame = ttk.Frame(self, padding=(12, 10, 12, 8), style="Toolbar.TFrame")
         nav_frame.pack(side=tk.TOP, fill=tk.X)
 
-        ttk.Label(nav_frame, text="現在地", style="Path.TLabel").pack(side=tk.LEFT, padx=(0, 8))
-        self.btn_up = ttk.Button(nav_frame, text="↑", width=3, command=self._navigate_up)
+        self.btn_up = ttk.Button(nav_frame, text="⤴", style="ToolbarIcon.TButton", command=self._navigate_up)
         self.btn_up.pack(side=tk.LEFT, padx=(0, 2))
 
-        self.btn_reload = ttk.Button(nav_frame, text="↻", width=3, command=self.reload)
+        self.btn_reload = ttk.Button(nav_frame, text="⟳", style="ToolbarIcon.TButton", command=self.reload)
         self.btn_reload.pack(side=tk.LEFT, padx=(0, 4))
 
         self.path_var = tk.StringVar()
@@ -74,20 +73,20 @@ class FileListView(ttk.Frame):
         tree_frame = ttk.Frame(self, padding=(12, 0, 12, 0), style="App.TFrame")
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        columns = ("name", "modified", "type", "size")
+        columns = ("modified", "type", "size")
         self.tree = ttk.Treeview(
             tree_frame,
             columns=columns,
-            show="headings",
+            show="tree headings",
             selectmode="browse"
         )
 
-        self.tree.heading("name", text="名前", command=lambda: self._sort_by("name"))
+        self.tree.heading("#0", text="名前", command=lambda: self._sort_by("name"))
         self.tree.heading("modified", text="更新日時", command=lambda: self._sort_by("modified"))
         self.tree.heading("type", text="種類", command=lambda: self._sort_by("type"))
         self.tree.heading("size", text="サイズ", anchor=tk.E, command=lambda: self._sort_by("size"))
 
-        self.tree.column("name", width=320, minwidth=150, anchor=tk.W)
+        self.tree.column("#0", width=320, minwidth=150, anchor=tk.W)
         self.tree.column("modified", width=140, minwidth=100, anchor=tk.W)
         self.tree.column("type", width=80, minwidth=60, anchor=tk.W)
         self.tree.column("size", width=90, minwidth=70, anchor=tk.E)
@@ -247,8 +246,9 @@ class FileListView(ttk.Frame):
                 "",
                 tk.END,
                 iid=item.path,
+                text=item.name,
                 image=self._folder_icon if item.is_dir else self._file_icon,
-                values=(item.name, item.modified_str, item_type, item.size_str)
+                values=(item.modified_str, item_type, item.size_str)
             )
 
     def _navigate_up(self):

@@ -58,6 +58,7 @@ class MainWindow(tk.Tk):
         style.configure("Section.TLabel", background="#e7dfd2", foreground="#586c72", font=("Segoe UI", 9, "bold"))
         style.configure("Path.TLabel", background="#fbf8f2", foreground="#657277", font=("Segoe UI", 9))
         style.configure("Status.TLabel", background="#ddd2c2", foreground="#4e5d61", padding=(10, 5))
+        style.configure("ToolbarIcon.TButton", font=("Segoe UI Symbol", 12), padding=(2, 1), width=3)
         style.configure("Treeview", rowheight=28, font=("Segoe UI", 9), background="#fffdf9", fieldbackground="#fffdf9")
         style.configure("Treeview.Heading", background="#d7c8b5", foreground="#394b57", font=("Segoe UI", 9, "bold"), padding=(8, 6))
         style.map("Treeview", background=[("selected", "#b9c7c1")], foreground=[("selected", "#263c43")])

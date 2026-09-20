@@ -47,14 +47,14 @@ class WorkspaceView(ttk.Frame):
         ws_btn_frame = ttk.Frame(ws_frame)
         ws_btn_frame.pack(side=tk.TOP, fill=tk.X)
 
-        btn_add_ws = ttk.Button(ws_btn_frame, text="+ 新規", width=6, command=self._add_workspace)
-        btn_add_ws.pack(side=tk.LEFT, padx=(0, 2))
+        btn_add_ws = ttk.Button(ws_btn_frame, text="+ 新規", command=self._add_workspace)
+        btn_add_ws.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 2))
 
-        btn_ren_ws = ttk.Button(ws_btn_frame, text="✏ 変更", width=6, command=self._rename_workspace)
-        btn_ren_ws.pack(side=tk.LEFT, padx=(0, 2))
+        btn_ren_ws = ttk.Button(ws_btn_frame, text="✏ 変更", command=self._rename_workspace)
+        btn_ren_ws.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 2))
 
-        btn_del_ws = ttk.Button(ws_btn_frame, text="🗑 削除", width=6, command=self._delete_workspace)
-        btn_del_ws.pack(side=tk.LEFT)
+        btn_del_ws = ttk.Button(ws_btn_frame, text="🗑 削除", command=self._delete_workspace)
+        btn_del_ws.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         shortcut_frame = ttk.Frame(ws_frame)
         shortcut_frame.pack(side=tk.TOP, fill=tk.X, pady=(5, 0))
