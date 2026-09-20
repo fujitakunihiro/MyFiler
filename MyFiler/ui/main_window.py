@@ -30,6 +30,29 @@ class MainWindow(tk.Tk):
         self.geometry(f"{self.app_config.window_width}x{self.app_config.window_height}")
         self.minsize(700, 450)
 
+        # Keep the visual language native to Windows while making the hierarchy
+        # easier to scan.  This uses only ttk, so no extra theme package is
+        # required.
+        style = ttk.Style(self)
+        try:
+            style.theme_use("vista")
+        except tk.TclError:
+            style.theme_use("clam")
+        # Paris palette: limestone facades, slate roofs, muted shutters and
+        # warm terracotta/brass accents.
+        style.configure("App.TFrame", background="#f3eee5")
+        style.configure("Sidebar.TFrame", background="#e7dfd2")
+        style.configure("Toolbar.TFrame", background="#fbf8f2")
+        style.configure("Panel.TLabelframe", background="#e7dfd2", bordercolor="#c9bca9")
+        style.configure("Panel.TLabelframe.Label", background="#e7dfd2", foreground="#394b57", font=("Segoe UI", 9, "bold"))
+        style.configure("Section.TLabel", background="#e7dfd2", foreground="#586c72", font=("Segoe UI", 9, "bold"))
+        style.configure("Path.TLabel", background="#fbf8f2", foreground="#657277", font=("Segoe UI", 9))
+        style.configure("Status.TLabel", background="#ddd2c2", foreground="#4e5d61", padding=(10, 5))
+        style.configure("Treeview", rowheight=28, font=("Segoe UI", 9), background="#fffdf9", fieldbackground="#fffdf9")
+        style.configure("Treeview.Heading", background="#d7c8b5", foreground="#394b57", font=("Segoe UI", 9, "bold"), padding=(8, 6))
+        style.map("Treeview", background=[("selected", "#b9c7c1")], foreground=[("selected", "#263c43")])
+        style.configure("Accent.TButton", foreground="#7b4b3d", font=("Segoe UI", 9, "bold"))
+
         # Intercept window close to save settings
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
@@ -52,7 +75,7 @@ class MainWindow(tk.Tk):
 
     def _build_ui(self):
         # Main split paned window
-        paned = tk.PanedWindow(self, orient=tk.HORIZONTAL, sashrelief=tk.RAISED, sashwidth=4)
+        paned = tk.PanedWindow(self, orient=tk.HORIZONTAL, sashrelief=tk.FLAT, sashwidth=5, bg="#b08d68", bd=0)
         paned.pack(fill=tk.BOTH, expand=True)
 
         # Left pane: Workspace & Tab Management
@@ -63,6 +86,7 @@ class MainWindow(tk.Tk):
             on_workspace_changed=self._on_workspace_changed,
             on_config_modified=self._save_config
         )
+        self.configure(bg="#f3eee5")
         paned.add(self.workspace_view, minsize=220, width=260)
 
         # Right pane: File List

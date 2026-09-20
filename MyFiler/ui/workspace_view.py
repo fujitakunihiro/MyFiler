@@ -33,7 +33,10 @@ class WorkspaceView(ttk.Frame):
 
     def _build_ui(self):
         # 1. Workspace Section (Top)
-        ws_frame = ttk.LabelFrame(self, text="📁 ワークスペース", padding=6)
+        self.configure(style="Sidebar.TFrame", padding=(10, 10, 8, 10))
+        ttk.Label(self, text="MYFILER", style="Section.TLabel").pack(side=tk.TOP, anchor=tk.W, pady=(0, 2))
+        ttk.Label(self, text="作業スペースを整理する", style="Section.TLabel").pack(side=tk.TOP, anchor=tk.W, pady=(0, 10))
+        ws_frame = ttk.LabelFrame(self, text="📁  ワークスペース", padding=8, style="Panel.TLabelframe")
         ws_frame.pack(side=tk.TOP, fill=tk.X, padx=4, pady=4)
 
         self.ws_combo_var = tk.StringVar()
@@ -54,7 +57,7 @@ class WorkspaceView(ttk.Frame):
         btn_del_ws.pack(side=tk.LEFT)
 
         # 2. Explorer Tab Section (Bottom)
-        tab_frame = ttk.LabelFrame(self, text="📑 タブ (作業フォルダ)", padding=6)
+        tab_frame = ttk.LabelFrame(self, text="📑  タブ / 作業フォルダ", padding=8, style="Panel.TLabelframe")
         tab_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=4, pady=4)
 
         # Tab List Treeview (shows Tab Name and Path)
@@ -63,6 +66,7 @@ class WorkspaceView(ttk.Frame):
 
         self.tab_tree = ttk.Treeview(list_container, columns=("name",), show="tree", selectmode="browse")
         self.tab_tree.column("#0", width=180, stretch=True)
+        self.tab_tree.tag_configure("active", foreground="#153e75")
 
         v_scroll = ttk.Scrollbar(list_container, orient=tk.VERTICAL, command=self.tab_tree.yview)
         self.tab_tree.configure(yscrollcommand=v_scroll.set)

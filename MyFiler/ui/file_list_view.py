@@ -32,13 +32,14 @@ class FileListView(ttk.Frame):
 
     def _build_ui(self):
         # 1. Top Navigation & Path Bar
-        nav_frame = ttk.Frame(self, padding=(4, 4))
+        nav_frame = ttk.Frame(self, padding=(12, 10, 12, 8), style="Toolbar.TFrame")
         nav_frame.pack(side=tk.TOP, fill=tk.X)
 
-        self.btn_up = ttk.Button(nav_frame, text="⬆ 上へ", width=6, command=self._navigate_up)
+        ttk.Label(nav_frame, text="現在地", style="Path.TLabel").pack(side=tk.LEFT, padx=(0, 8))
+        self.btn_up = ttk.Button(nav_frame, text="↑", width=3, command=self._navigate_up)
         self.btn_up.pack(side=tk.LEFT, padx=(0, 2))
 
-        self.btn_reload = ttk.Button(nav_frame, text="🔄 更新", width=6, command=self.reload)
+        self.btn_reload = ttk.Button(nav_frame, text="↻", width=3, command=self.reload)
         self.btn_reload.pack(side=tk.LEFT, padx=(0, 4))
 
         self.path_var = tk.StringVar()
@@ -46,11 +47,11 @@ class FileListView(ttk.Frame):
         self.path_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
         self.path_entry.bind("<Return>", lambda e: self.navigate_to(self.path_var.get()))
 
-        self.btn_explorer = ttk.Button(nav_frame, text="📂 Explorerで開く", command=self._open_current_in_explorer)
+        self.btn_explorer = ttk.Button(nav_frame, text="Explorerで開く", command=self._open_current_in_explorer, style="Accent.TButton")
         self.btn_explorer.pack(side=tk.RIGHT)
 
         # 2. File List (Treeview)
-        tree_frame = ttk.Frame(self)
+        tree_frame = ttk.Frame(self, padding=(12, 0, 12, 0), style="App.TFrame")
         tree_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         columns = ("name", "modified", "type", "size")
@@ -85,7 +86,7 @@ class FileListView(ttk.Frame):
 
         # 3. Status Bar
         self.status_var = tk.StringVar(value="準備完了")
-        status_bar = ttk.Label(self, textvariable=self.status_var, relief=tk.SUNKEN, anchor=tk.W, padding=(4, 2))
+        status_bar = ttk.Label(self, textvariable=self.status_var, anchor=tk.W, style="Status.TLabel")
         status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Mouse & Keyboard Bindings
