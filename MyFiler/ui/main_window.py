@@ -38,6 +38,7 @@ class MainWindow(tk.Tk):
         self.title("MyFiler - 仕事用ファイラー")
         self.geometry(f"{self.app_config.window_width}x{self.app_config.window_height}")
         self.minsize(700, 450)
+        self._set_app_icon()
 
         # Keep the visual language native to Windows while making the hierarchy
         # easier to scan.  This uses only ttk, so no extra theme package is
@@ -64,6 +65,22 @@ class MainWindow(tk.Tk):
 
         # Intercept window close to save settings
         self.protocol("WM_DELETE_WINDOW", self._on_close)
+
+    def _set_app_icon(self):
+        """Set a small folder/document icon without external image assets."""
+        icon = tk.PhotoImage(width=16, height=16)
+        icon.put("#f3eee5", to=(0, 0, 16, 16))
+        # Document behind the folder.
+        icon.put("#fffdf9", to=(5, 2, 13, 12))
+        icon.put("#b9c7c1", to=(5, 2, 13, 3))
+        icon.put("#d7c8b5", to=(6, 5, 12, 6))
+        icon.put("#d7c8b5", to=(6, 8, 11, 9))
+        # Limestone/terracotta folder in front.
+        icon.put("#b76e57", to=(2, 7, 14, 14))
+        icon.put("#c88968", to=(3, 5, 9, 8))
+        icon.put("#d7a07d", to=(3, 8, 13, 9))
+        self._app_icon = icon
+        self.iconphoto(True, self._app_icon)
 
     def _build_menu(self):
         menubar = tk.Menu(self)
