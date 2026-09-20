@@ -101,10 +101,18 @@ class FileListView(ttk.Frame):
         self.tree.bind("<Control-c>", lambda e: self._copy_selected_item())
         self.tree.bind("<Control-x>", lambda e: self._cut_selected_item())
         self.tree.bind("<Control-v>", lambda e: self._paste_item())
-        # Standard Windows mouse side buttons: XButton1 = back, XButton2 = forward.
-        # Button-8/9 are used by Tk on some Windows configurations.
-        self.tree.bind("<Button-8>", self._navigate_back)
-        self.tree.bind("<Button-9>", self._navigate_forward)
+        # Mouse side-button event names differ between Tk builds. Register
+        # only events supported by the current runtime so startup is safe.
+        for sequence, handler in (
+            ("<XButton1>", self._navigate_back),
+            ("<XButton2>", self._navigate_forward),
+            ("<Button-8>", self._navigate_back),
+            ("<Button-9>", self._navigate_forward),
+        ):
+            try:
+                self.tree.bind(sequence, handler)
+            except tk.TclError:
+                pass
         self.tree.bind("<Alt-Left>", self._navigate_back)
         self.tree.bind("<Alt-Right>", self._navigate_forward)
 
