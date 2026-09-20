@@ -33,8 +33,29 @@ class FileItem:
 
     @property
     def icon(self) -> str:
-        """Simple text/emoji indicator for item type."""
-        return "📁" if self.is_dir else "📄"
+        """Small native-font-friendly indicator for common file types."""
+        if self.is_dir:
+            return "📁"
+        return {
+            ".zip": "🗜",
+            ".pdf": "📕",
+            ".txt": "📄",
+            ".md": "📝",
+            ".doc": "📘",
+            ".docx": "📘",
+            ".xls": "📗",
+            ".xlsx": "📗",
+            ".ppt": "📙",
+            ".pptx": "📙",
+            ".jpg": "🖼",
+            ".jpeg": "🖼",
+            ".png": "🖼",
+            ".gif": "🖼",
+            ".py": "🐍",
+            ".js": "⚙",
+            ".json": "⚙",
+            ".exe": "⚙",
+        }.get(self.extension, "📄")
 
 
 class FileManager:
