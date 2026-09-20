@@ -32,7 +32,25 @@ class FileListView(ttk.Frame):
 
         self._build_ui()
 
+    def _create_item_icons(self):
+        """Create crisp 16px icons that render consistently across Windows fonts."""
+        self._folder_icon = tk.PhotoImage(width=16, height=16)
+        self._folder_icon.put("#fffdf9", to=(0, 0, 16, 16))
+        self._folder_icon.put("#8c5a3c", to=(1, 5, 15, 14))
+        self._folder_icon.put("#c8894f", to=(2, 4, 8, 6))
+        self._folder_icon.put("#dca86b", to=(2, 7, 14, 12))
+        self._folder_icon.put("#b57444", to=(2, 13, 14, 14))
+
+        self._file_icon = tk.PhotoImage(width=16, height=16)
+        self._file_icon.put("#fffdf9", to=(0, 0, 16, 16))
+        self._file_icon.put("#71828a", to=(4, 2, 13, 14))
+        self._file_icon.put("#eef2ef", to=(5, 3, 12, 13))
+        self._file_icon.put("#c88968", to=(5, 5, 10, 6))
+        self._file_icon.put("#b9c7c1", to=(5, 8, 11, 9))
+        self._file_icon.put("#b9c7c1", to=(5, 11, 10, 12))
+
     def _build_ui(self):
+        self._create_item_icons()
         # 1. Top Navigation & Path Bar
         nav_frame = ttk.Frame(self, padding=(12, 10, 12, 8), style="Toolbar.TFrame")
         nav_frame.pack(side=tk.TOP, fill=tk.X)
@@ -225,12 +243,12 @@ class FileListView(ttk.Frame):
 
         for item in self.items:
             item_type = "フォルダ" if item.is_dir else (item.extension.upper()[1:] + " ファイル" if item.extension else "ファイル")
-            display_name = f"{item.icon} {item.name}"
             self.tree.insert(
                 "",
                 tk.END,
                 iid=item.path,
-                values=(display_name, item.modified_str, item_type, item.size_str)
+                image=self._folder_icon if item.is_dir else self._file_icon,
+                values=(item.name, item.modified_str, item_type, item.size_str)
             )
 
     def _navigate_up(self):
