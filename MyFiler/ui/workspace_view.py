@@ -56,8 +56,15 @@ class WorkspaceView(ttk.Frame):
         btn_del_ws = ttk.Button(ws_btn_frame, text="🗑 削除", width=6, command=self._delete_workspace)
         btn_del_ws.pack(side=tk.LEFT)
 
-        btn_shortcut = ttk.Button(ws_btn_frame, text="⌨ 割当", width=6, command=self._assign_shortcut)
-        btn_shortcut.pack(side=tk.RIGHT)
+        shortcut_frame = ttk.Frame(ws_frame)
+        shortcut_frame.pack(side=tk.TOP, fill=tk.X, pady=(5, 0))
+        btn_shortcut = ttk.Button(
+            shortcut_frame,
+            text="⌨  ショートカットを割り当てる",
+            command=self._assign_shortcut,
+            style="Accent.TButton",
+        )
+        btn_shortcut.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         # Keep tab actions outside the expanding list so they remain visible
         # even when the window height is reduced.
