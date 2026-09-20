@@ -34,8 +34,7 @@ class WorkspaceView(ttk.Frame):
     def _build_ui(self):
         # 1. Workspace Section (Top)
         self.configure(style="Sidebar.TFrame", padding=(10, 10, 8, 10))
-        ttk.Label(self, text="MYFILER", style="Section.TLabel").pack(side=tk.TOP, anchor=tk.W, pady=(0, 2))
-        ttk.Label(self, text="作業スペースを整理する", style="Section.TLabel").pack(side=tk.TOP, anchor=tk.W, pady=(0, 10))
+        ttk.Label(self, text="MyFiler", style="Section.TLabel").pack(side=tk.TOP, anchor=tk.W, pady=(0, 10))
         ws_frame = ttk.LabelFrame(self, text="📁  ワークスペース", padding=8, style="Panel.TLabelframe")
         ws_frame.pack(side=tk.TOP, fill=tk.X, padx=4, pady=4)
 
@@ -50,10 +49,10 @@ class WorkspaceView(ttk.Frame):
         btn_add_ws = ttk.Button(ws_btn_frame, text="+ 新規", command=self._add_workspace)
         btn_add_ws.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 2))
 
-        btn_ren_ws = ttk.Button(ws_btn_frame, text="✏ 変更", command=self._rename_workspace)
+        btn_ren_ws = ttk.Button(ws_btn_frame, text="✎ 変更", command=self._rename_workspace)
         btn_ren_ws.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 2))
 
-        btn_del_ws = ttk.Button(ws_btn_frame, text="🗑 削除", command=self._delete_workspace)
+        btn_del_ws = ttk.Button(ws_btn_frame, text="× 削除", command=self._delete_workspace)
         btn_del_ws.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         shortcut_frame = ttk.Frame(ws_frame)
@@ -133,7 +132,7 @@ class WorkspaceView(ttk.Frame):
 
         for tab in active_ws.tabs:
             item_id = tab.id
-            display_text = f"📁 {tab.name}"
+            display_text = f"▣  {tab.name}"
             self.tab_tree.insert("", tk.END, iid=item_id, text=display_text)
 
         # Restore selection

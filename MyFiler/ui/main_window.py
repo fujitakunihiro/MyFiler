@@ -5,6 +5,7 @@ Integrates WorkspaceView and FileListView in a split-pane layout.
 
 from pathlib import Path
 import tkinter as tk
+import tkinter.font as tkfont
 from tkinter import messagebox, ttk
 
 from core.config import AppConfig, ConfigManager, ExplorerTab, Workspace
@@ -44,6 +45,13 @@ class MainWindow(tk.Tk):
         # easier to scan.  This uses only ttk, so no extra theme package is
         # required.
         style = ttk.Style(self)
+        # Use the clean Windows UI font when available; Tk falls back safely
+        # on systems where Yu Gothic UI is not installed.
+        for font_name in ("TkDefaultFont", "TkTextFont", "TkMenuFont", "TkHeadingFont"):
+            try:
+                tkfont.nametofont(font_name).configure(family="Yu Gothic UI", size=9)
+            except tk.TclError:
+                pass
         try:
             style.theme_use("vista")
         except tk.TclError:
@@ -54,15 +62,15 @@ class MainWindow(tk.Tk):
         style.configure("Sidebar.TFrame", background="#e7dfd2")
         style.configure("Toolbar.TFrame", background="#fbf8f2")
         style.configure("Panel.TLabelframe", background="#e7dfd2", bordercolor="#c9bca9")
-        style.configure("Panel.TLabelframe.Label", background="#e7dfd2", foreground="#394b57", font=("Segoe UI", 9, "bold"))
-        style.configure("Section.TLabel", background="#e7dfd2", foreground="#586c72", font=("Segoe UI", 9, "bold"))
-        style.configure("Path.TLabel", background="#fbf8f2", foreground="#657277", font=("Segoe UI", 9))
+        style.configure("Panel.TLabelframe.Label", background="#e7dfd2", foreground="#394b57", font=("Yu Gothic UI", 9, "bold"))
+        style.configure("Section.TLabel", background="#e7dfd2", foreground="#586c72", font=("Yu Gothic UI", 9, "bold"))
+        style.configure("Path.TLabel", background="#fbf8f2", foreground="#657277", font=("Yu Gothic UI", 9))
         style.configure("Status.TLabel", background="#ddd2c2", foreground="#4e5d61", padding=(10, 5))
         style.configure("ToolbarIcon.TButton", font=("Segoe UI Symbol", 12), padding=(2, 1), width=3)
-        style.configure("Treeview", rowheight=28, font=("Segoe UI", 9), background="#fffdf9", fieldbackground="#fffdf9")
-        style.configure("Treeview.Heading", background="#d7c8b5", foreground="#394b57", font=("Segoe UI", 9, "bold"), padding=(8, 6))
+        style.configure("Treeview", rowheight=28, font=("Yu Gothic UI", 9), background="#fffdf9", fieldbackground="#fffdf9")
+        style.configure("Treeview.Heading", background="#d7c8b5", foreground="#394b57", font=("Yu Gothic UI", 9, "bold"), padding=(8, 6))
         style.map("Treeview", background=[("selected", "#b9c7c1")], foreground=[("selected", "#263c43")])
-        style.configure("Accent.TButton", foreground="#7b4b3d", font=("Segoe UI", 9, "bold"))
+        style.configure("Accent.TButton", foreground="#7b4b3d", font=("Yu Gothic UI", 9, "bold"))
 
         # Intercept window close to save settings
         self.protocol("WM_DELETE_WINDOW", self._on_close)
