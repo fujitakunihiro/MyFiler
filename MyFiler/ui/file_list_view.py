@@ -23,6 +23,8 @@ class FileListView(ttk.Frame):
         self.items: List[FileItem] = []
         self._sort_column: str = "name"
         self._sort_reverse: bool = False
+        self._navigation_history: List[str] = []
+        self._history_index: int = -1
 
         # Clipboard for cut/copy operations
         self._clipboard_path: Optional[str] = None
@@ -99,6 +101,12 @@ class FileListView(ttk.Frame):
         self.tree.bind("<Control-c>", lambda e: self._copy_selected_item())
         self.tree.bind("<Control-x>", lambda e: self._cut_selected_item())
         self.tree.bind("<Control-v>", lambda e: self._paste_item())
+        # Standard Windows mouse side buttons: XButton1 = back, XButton2 = forward.
+        # Button-8/9 are used by Tk on some Windows configurations.
+        self.tree.bind("<Button-8>", self._navigate_back)
+        self.tree.bind("<Button-9>", self._navigate_forward)
+        self.tree.bind("<Alt-Left>", self._navigate_back)
+        self.tree.bind("<Alt-Right>", self._navigate_forward)
 
         # Build Context Menus
         self._build_context_menus()
@@ -141,7 +149,7 @@ class FileListView(ttk.Frame):
         self.blank_menu.add_separator()
         self.blank_menu.add_command(label="プロパティ", command=self._show_current_properties)
 
-    def navigate_to(self, target_path: str):
+    def navigate_to(self, target_path: str, record_history: bool = True):
         """Navigate to the target directory and refresh contents."""
         target_path = target_path.strip().strip('"')
         if not target_path:
@@ -156,12 +164,34 @@ class FileListView(ttk.Frame):
         if not path_obj.is_dir():
             path_obj = path_obj.parent
 
-        self.current_path = str(path_obj.resolve())
+        resolved_path = str(path_obj.resolve())
+        if record_history and resolved_path != self.current_path:
+            # A new route after going back starts a new branch.
+            self._navigation_history = self._navigation_history[: self._history_index + 1]
+            self._navigation_history.append(resolved_path)
+            self._history_index = len(self._navigation_history) - 1
+
+        self.current_path = resolved_path
         self.path_var.set(self.current_path)
         self.reload()
 
         if self.on_path_changed:
             self.on_path_changed(self.current_path)
+
+    def _navigate_history(self, offset: int):
+        target_index = self._history_index + offset
+        if not (0 <= target_index < len(self._navigation_history)):
+            return
+        self._history_index = target_index
+        self.navigate_to(self._navigation_history[target_index], record_history=False)
+
+    def _navigate_back(self, event=None):
+        self._navigate_history(-1)
+        return "break"
+
+    def _navigate_forward(self, event=None):
+        self._navigate_history(1)
+        return "break"
 
     def reload(self):
         """Reload items for current path."""
