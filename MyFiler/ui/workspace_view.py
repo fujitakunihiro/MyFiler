@@ -56,6 +56,17 @@ class WorkspaceView(ttk.Frame):
         btn_del_ws = ttk.Button(ws_btn_frame, text="🗑 削除", width=6, command=self._delete_workspace)
         btn_del_ws.pack(side=tk.LEFT)
 
+        # Keep tab actions outside the expanding list so they remain visible
+        # even when the window height is reduced.
+        tab_btn_frame = ttk.Frame(self, style="Sidebar.TFrame")
+        tab_btn_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=4, pady=(6, 0))
+
+        btn_add_tab = ttk.Button(tab_btn_frame, text="+ フォルダ追加", command=self._add_tab, style="Accent.TButton")
+        btn_add_tab.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
+
+        btn_del_tab = ttk.Button(tab_btn_frame, text="削除", width=6, command=self._delete_tab)
+        btn_del_tab.pack(side=tk.LEFT)
+
         # 2. Explorer Tab Section (Bottom)
         tab_frame = ttk.LabelFrame(self, text="📑  タブ / 作業フォルダ", padding=8, style="Panel.TLabelframe")
         tab_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=4, pady=4)
@@ -76,16 +87,6 @@ class WorkspaceView(ttk.Frame):
 
         self.tab_tree.bind("<<TreeviewSelect>>", self._on_tab_selected_event)
         self.tab_tree.bind("<Button-3>", self._show_tab_context_menu)
-
-        # Tab Action Buttons
-        tab_btn_frame = ttk.Frame(tab_frame)
-        tab_btn_frame.pack(side=tk.BOTTOM, fill=tk.X, pady=(4, 0))
-
-        btn_add_tab = ttk.Button(tab_btn_frame, text="+ フォルダ追加", command=self._add_tab)
-        btn_add_tab.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 2))
-
-        btn_del_tab = ttk.Button(tab_btn_frame, text="🗑 削除", width=6, command=self._delete_tab)
-        btn_del_tab.pack(side=tk.LEFT)
 
         # Tab context menu
         self._build_tab_context_menu()
