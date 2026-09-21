@@ -35,7 +35,7 @@ class WorkspaceView(ttk.Frame):
         # 1. Workspace Section (Top)
         self.configure(style="Sidebar.TFrame", padding=(10, 10, 8, 10))
         ttk.Label(self, text="MyFiler", style="Section.TLabel").pack(side=tk.TOP, anchor=tk.W, pady=(0, 10))
-        ws_frame = ttk.LabelFrame(self, text="📁  ワークスペース", padding=8, style="Panel.TLabelframe")
+        ws_frame = ttk.LabelFrame(self, text="ワークスペース", padding=8, style="Panel.TLabelframe")
         ws_frame.pack(side=tk.TOP, fill=tk.X, padx=4, pady=4)
 
         self.ws_combo_var = tk.StringVar()
@@ -77,7 +77,7 @@ class WorkspaceView(ttk.Frame):
         btn_del_tab.pack(side=tk.LEFT)
 
         # 2. Explorer Tab Section (Bottom)
-        tab_frame = ttk.LabelFrame(self, text="📑  タブ / 作業フォルダ", padding=8, style="Panel.TLabelframe")
+        tab_frame = ttk.LabelFrame(self, text="タブ / 作業フォルダ", padding=8, style="Panel.TLabelframe")
         tab_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=4, pady=4)
 
         # Tab List Treeview (shows Tab Name and Path)
@@ -132,7 +132,7 @@ class WorkspaceView(ttk.Frame):
 
         for tab in active_ws.tabs:
             item_id = tab.id
-            display_text = f"▣  {tab.name}"
+            display_text = f"▱  {tab.name}"
             self.tab_tree.insert("", tk.END, iid=item_id, text=display_text)
 
         # Restore selection

@@ -58,19 +58,19 @@ class MainWindow(tk.Tk):
             style.theme_use("clam")
         # Paris palette: limestone facades, slate roofs, muted shutters and
         # warm terracotta/brass accents.
-        style.configure("App.TFrame", background="#f3eee5")
-        style.configure("Sidebar.TFrame", background="#e7dfd2")
-        style.configure("Toolbar.TFrame", background="#fbf8f2")
-        style.configure("Panel.TLabelframe", background="#e7dfd2", bordercolor="#c9bca9")
-        style.configure("Panel.TLabelframe.Label", background="#e7dfd2", foreground="#394b57", font=("Yu Gothic UI", 9, "bold"))
-        style.configure("Section.TLabel", background="#e7dfd2", foreground="#586c72", font=("Yu Gothic UI", 9, "bold"))
-        style.configure("Path.TLabel", background="#fbf8f2", foreground="#657277", font=("Yu Gothic UI", 9))
-        style.configure("Status.TLabel", background="#ddd2c2", foreground="#4e5d61", padding=(10, 5))
+        style.configure("App.TFrame", background="#f5f5f7")
+        style.configure("Sidebar.TFrame", background="#f0f0f2")
+        style.configure("Toolbar.TFrame", background="#ffffff")
+        style.configure("Panel.TLabelframe", background="#f0f0f2", bordercolor="#d6d6da")
+        style.configure("Panel.TLabelframe.Label", background="#f0f0f2", foreground="#3c3c43", font=("Yu Gothic UI", 9, "bold"))
+        style.configure("Section.TLabel", background="#f0f0f2", foreground="#6e6e73", font=("Yu Gothic UI", 9, "bold"))
+        style.configure("Path.TLabel", background="#ffffff", foreground="#6e6e73", font=("Yu Gothic UI", 9))
+        style.configure("Status.TLabel", background="#e8e8ed", foreground="#6e6e73", padding=(10, 5))
         style.configure("ToolbarIcon.TButton", font=("Segoe UI Symbol", 12), padding=(2, 1), width=3)
-        style.configure("Treeview", rowheight=28, font=("Yu Gothic UI", 9), background="#fffdf9", fieldbackground="#fffdf9")
-        style.configure("Treeview.Heading", background="#d7c8b5", foreground="#394b57", font=("Yu Gothic UI", 9, "bold"), padding=(8, 6))
-        style.map("Treeview", background=[("selected", "#b9c7c1")], foreground=[("selected", "#263c43")])
-        style.configure("Accent.TButton", foreground="#7b4b3d", font=("Yu Gothic UI", 9, "bold"))
+        style.configure("Treeview", rowheight=30, font=("Yu Gothic UI", 9), background="#ffffff", fieldbackground="#ffffff")
+        style.configure("Treeview.Heading", background="#f5f5f7", foreground="#6e6e73", font=("Yu Gothic UI", 9, "bold"), padding=(8, 7))
+        style.map("Treeview", background=[("selected", "#dbeafe")], foreground=[("selected", "#1d4ed8")])
+        style.configure("Accent.TButton", foreground="#007aff", font=("Yu Gothic UI", 9, "bold"))
 
         # Intercept window close to save settings
         self.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -84,10 +84,10 @@ class MainWindow(tk.Tk):
         icon.put("#b9c7c1", to=(5, 2, 13, 3))
         icon.put("#d7c8b5", to=(6, 5, 12, 6))
         icon.put("#d7c8b5", to=(6, 8, 11, 9))
-        # Limestone/terracotta folder in front.
-        icon.put("#b76e57", to=(2, 7, 14, 14))
-        icon.put("#c88968", to=(3, 5, 9, 8))
-        icon.put("#d7a07d", to=(3, 8, 13, 9))
+        # Apple-like system-blue folder in front.
+        icon.put("#0a84ff", to=(2, 7, 14, 14))
+        icon.put("#409cff", to=(3, 5, 9, 8))
+        icon.put("#64b5ff", to=(3, 8, 13, 9))
         self._app_icon = icon
         self.iconphoto(True, self._app_icon)
 
@@ -110,7 +110,7 @@ class MainWindow(tk.Tk):
 
     def _build_ui(self):
         # Main split paned window
-        paned = tk.PanedWindow(self, orient=tk.HORIZONTAL, sashrelief=tk.FLAT, sashwidth=5, bg="#b08d68", bd=0)
+        paned = tk.PanedWindow(self, orient=tk.HORIZONTAL, sashrelief=tk.FLAT, sashwidth=5, bg="#d1d1d6", bd=0)
         paned.pack(fill=tk.BOTH, expand=True)
 
         # Left pane: Workspace & Tab Management
@@ -121,7 +121,7 @@ class MainWindow(tk.Tk):
             on_workspace_changed=self._on_workspace_changed,
             on_config_modified=self._save_config
         )
-        self.configure(bg="#f3eee5")
+        self.configure(bg="#f5f5f7")
         paned.add(self.workspace_view, minsize=220, width=260)
 
         # Right pane: File List

@@ -29,6 +29,8 @@ class FileListView(ttk.Frame):
         # Clipboard for cut/copy operations
         self._clipboard_path: Optional[str] = None
         self._clipboard_is_cut: bool = False
+        self._drag_iid: Optional[str] = None
+        self._dragging: bool = False
 
         self._build_ui()
 
@@ -36,18 +38,18 @@ class FileListView(ttk.Frame):
         """Create crisp 16px icons that render consistently across Windows fonts."""
         self._folder_icon = tk.PhotoImage(width=16, height=16)
         self._folder_icon.put("#fffdf9", to=(0, 0, 16, 16))
-        self._folder_icon.put("#8c5a3c", to=(1, 5, 15, 14))
-        self._folder_icon.put("#c8894f", to=(2, 4, 8, 6))
-        self._folder_icon.put("#dca86b", to=(2, 7, 14, 12))
-        self._folder_icon.put("#b57444", to=(2, 13, 14, 14))
+        self._folder_icon.put("#0a84ff", to=(1, 5, 15, 14))
+        self._folder_icon.put("#409cff", to=(2, 4, 8, 6))
+        self._folder_icon.put("#64b5ff", to=(2, 7, 14, 12))
+        self._folder_icon.put("#0875e1", to=(2, 13, 14, 14))
 
         self._file_icon = tk.PhotoImage(width=16, height=16)
         self._file_icon.put("#fffdf9", to=(0, 0, 16, 16))
-        self._file_icon.put("#71828a", to=(4, 2, 13, 14))
-        self._file_icon.put("#eef2ef", to=(5, 3, 12, 13))
-        self._file_icon.put("#c88968", to=(5, 5, 10, 6))
-        self._file_icon.put("#b9c7c1", to=(5, 8, 11, 9))
-        self._file_icon.put("#b9c7c1", to=(5, 11, 10, 12))
+        self._file_icon.put("#8e8e93", to=(4, 2, 13, 14))
+        self._file_icon.put("#f2f2f7", to=(5, 3, 12, 13))
+        self._file_icon.put("#0a84ff", to=(5, 5, 10, 6))
+        self._file_icon.put("#c7c7cc", to=(5, 8, 11, 9))
+        self._file_icon.put("#c7c7cc", to=(5, 11, 10, 12))
 
     def _build_ui(self):
         self._create_item_icons()
@@ -66,7 +68,7 @@ class FileListView(ttk.Frame):
         self.path_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
         self.path_entry.bind("<Return>", lambda e: self.navigate_to(self.path_var.get()))
 
-        self.btn_explorer = ttk.Button(nav_frame, text="Explorerで開く", command=self._open_current_in_explorer, style="Accent.TButton")
+        self.btn_explorer = ttk.Button(nav_frame, text="Explorerで開く", command=self._open_current_in_explorer)
         self.btn_explorer.pack(side=tk.RIGHT)
 
         # 2. File List (Treeview)
@@ -78,7 +80,7 @@ class FileListView(ttk.Frame):
             tree_frame,
             columns=columns,
             show="tree headings",
-            selectmode="browse"
+            selectmode="extended"
         )
 
         self.tree.heading("#0", text="名前", command=lambda: self._sort_by("name"))
@@ -118,6 +120,9 @@ class FileListView(ttk.Frame):
         self.tree.bind("<Control-c>", lambda e: self._copy_selected_item())
         self.tree.bind("<Control-x>", lambda e: self._cut_selected_item())
         self.tree.bind("<Control-v>", lambda e: self._paste_item())
+        self.tree.bind("<ButtonPress-1>", self._begin_drag)
+        self.tree.bind("<B1-Motion>", self._track_drag)
+        self.tree.bind("<ButtonRelease-1>", self._finish_drag)
         # Mouse side-button event names differ between Tk builds. Register
         # only events supported by the current runtime so startup is safe.
         for sequence, handler in (
@@ -267,6 +272,49 @@ class FileListView(ttk.Frame):
             if item.path == selected_path:
                 return item
         return None
+
+    def _get_selected_items(self) -> List[FileItem]:
+        selected_paths = set(self.tree.selection())
+        return [item for item in self.items if item.path in selected_paths]
+
+    def _begin_drag(self, event):
+        self._drag_iid = self.tree.identify_row(event.y)
+        self._dragging = False
+        # Let Treeview handle Ctrl/Shift range selection. Resetting the
+        # selection here would cancel Ctrl-click multi-selection.
+        modifier_pressed = bool(event.state & (0x0001 | 0x0004))
+        if self._drag_iid and self._drag_iid not in self.tree.selection() and not modifier_pressed:
+            self.tree.selection_set(self._drag_iid)
+
+    def _track_drag(self, event):
+        if self._drag_iid and (abs(event.x) > 4 or abs(event.y) > 4):
+            self._dragging = True
+
+    def _finish_drag(self, event):
+        if not self._dragging:
+            self._drag_iid = None
+            return
+        self._dragging = False
+        target_iid = self.tree.identify_row(event.y)
+        target = next((item for item in self.items if item.path == target_iid), None)
+        selected = self._get_selected_items()
+        self._drag_iid = None
+        if not target or not target.is_dir or not selected or target in selected:
+            return
+        if not messagebox.askyesno(
+            "ファイルを移動",
+            f"選択した {len(selected)} 個を「{target.name}」へ移動しますか？",
+            parent=self,
+        ):
+            return
+        for item in selected:
+            err = FileManager.paste_item(item.path, target.path, True)
+            if err:
+                messagebox.showerror("移動エラー", err, parent=self)
+                break
+        else:
+            self.status_var.set(f"{len(selected)} 個を移動しました")
+            self.reload()
 
     def _on_double_click(self, event):
         item = self._get_selected_item()
